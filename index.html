@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البعد العلمي - Dimensi Karya BSA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#fff1f2', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 900: '#450a0a' }
+                    },
+                    borderRadius: { '3xl': '2rem' }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .arabic-font { font-family: 'Amiri', serif; }
+        .hidden-view { display: none !important; }
+        .editor-container { min-height: 300px; outline: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen flex flex-col">
+
+    <nav id="mainNav" class="hidden sticky top-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="app.navigate('home')">
+                <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <span class="arabic-font text-xl font-bold text-brand-700 dark:text-brand-500">البعد العلمي</span>
+            </div>
+            <div class="flex items-center gap-1 sm:gap-4">
+                <button onclick="app.navigate('home')" class="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition">🏠</button>
+                <button onclick="app.navigate('quiz')" class="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition">🎮</button>
+                <button onclick="app.navigate('my-posts')" class="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition">📑</button>
+                <button onclick="app.navigate('profile')" class="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition">👤</button>
+                <button id="adminBtn" onclick="app.navigate('admin')" class="hidden p-2 text-blue-600 rounded-full transition">🛡️</button>
+                <button onclick="app.toggleDarkMode()" class="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition"><span id="themeIcon">🌙</span></button>
+                <button onclick="app.logout()" class="text-xs font-bold text-red-600 px-3 py-1 border border-red-200 rounded-lg">LOGOUT</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-7xl">
+        <div id="view-login" class="max-w-md mx-auto mt-12">
+            <div class="text-center mb-10">
+                <h1 class="arabic-font text-5xl font-black text-brand-700 dark:text-brand-500 mb-2">البعد العلمي</h1>
+                <p class="text-gray-400 font-medium tracking-widest uppercase text-xs">Dimensi Karya BSA</p>
+            </div>
+            <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-zinc-800">
+                <form id="loginForm" onsubmit="app.handleAuth(event)" class="space-y-4">
+                    <input type="text" id="authUsername" placeholder="Username" required class="w-full px-5 py-4 rounded-2xl border dark:bg-zinc-950 dark:border-zinc-800">
+                    <input type="password" id="authPassword" placeholder="Password" required class="w-full px-5 py-4 rounded-2xl border dark:bg-zinc-950 dark:border-zinc-800">
+                    <button type="submit" class="w-full bg-brand-600 text-white font-black py-5 rounded-2xl uppercase">Masuk</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="view-home" class="hidden-view space-y-12">
+            <h2 class="text-4xl font-black text-center uppercase">Karya Terkini</h2>
+            <div id="postsFeed" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            <div class="fixed bottom-10 right-10"><button onclick="app.navigate('write')" class="w-16 h-16 bg-brand-600 text-white rounded-full text-3xl shadow-2xl">+</button></div>
+        </div>
+
+        <div id="view-write" class="hidden-view max-w-4xl mx-auto space-y-6">
+            <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border shadow-2xl space-y-6">
+                <select id="postCategory" class="w-full px-5 py-4 rounded-2xl border dark:bg-zinc-950"><option value="Linguistik">Linguistik</option><option value="Sastra">Sastra</option></select>
+                <input type="text" id="postTitle" placeholder="Judul Karya" class="w-full px-5 py-4 rounded-2xl border dark:bg-zinc-950">
+                <div id="editor" contenteditable="true" class="editor-container p-6 border rounded-2xl bg-gray-50 dark:bg-zinc-950"></div>
+                <button onclick="app.submitPost()" class="w-full bg-brand-600 text-white font-black py-5 rounded-2xl">PUBLIKASIKAN</button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJ0G2GQPMjtP8atxWDh8yX5kZdDV5UjDA",
+            authDomain: "al-bud-b9af9.firebaseapp.com",
+            projectId: "al-bud-b9af9",
+            storageBucket: "al-bud-b9af9.firebasestorage.app",
+            messagingSenderId: "414499709060",
+            appId: "1:414499709060:web:1852782556776230b362d1",
+            measurementId: "G-FT6STPS6TG"
+        };
+
+        const fApp = initializeApp(firebaseConfig);
+        const db = getFirestore(fApp);
+
+        const app = {
+            currentUser: JSON.parse(sessionStorage.getItem('albud_session')),
+            state: { darkMode: false },
+
+            init() {
+                if (this.currentUser) this.onLoginSuccess();
+                else this.navigate('login');
+                this.renderPosts();
+            },
+
+            navigate(view) {
+                document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden-view'));
+                document.getElementById(`view-${view}`).classList.remove('hidden-view');
+                document.getElementById('mainNav').classList.toggle('hidden', view === 'login');
+            },
+
+            handleAuth(e) {
+                e.preventDefault();
+                // Login sederhana (bisa dikembangkan ke Firebase Auth nanti)
+                const user = { username: document.getElementById('authUsername').value, fullName: 'Penulis BSA' };
+                this.currentUser = user;
+                sessionStorage.setItem('albud_session', JSON.stringify(user));
+                this.onLoginSuccess();
+            },
+
+            onLoginSuccess() {
+                document.getElementById('adminBtn').classList.toggle('hidden', this.currentUser.username !== 'admin');
+                this.navigate('home');
+            },
+
+            logout() {
+                sessionStorage.clear();
+                location.reload();
+            },
+
+            async submitPost() {
+                const title = document.getElementById('postTitle').value;
+                const content = document.getElementById('editor').innerHTML;
+                const category = document.getElementById('postCategory').value;
+
+                if (!title) return alert('Isi judul!');
+
+                try {
+                    await addDoc(collection(db, "posts"), {
+                        title, content, category,
+                        author: this.currentUser.username,
+                        status: 'published', // Langsung publish untuk demo, ganti 'pending' untuk moderasi
+                        timestamp: Date.now(),
+                        date: new Date().toLocaleDateString('id-ID')
+                    });
+                    alert('Karya terbit!');
+                    this.renderPosts();
+                    this.navigate('home');
+                } catch (e) { alert(e.message); }
+            },
+
+            async renderPosts() {
+                const feed = document.getElementById('postsFeed');
+                if (!feed) return;
+                const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+                const snap = await getDocs(q);
+                let html = "";
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    html += `<div class="bg-white dark:bg-zinc-900 p-8 rounded-3xl border shadow-sm">
+                        <span class="text-xs font-bold text-brand-600 uppercase">${p.category}</span>
+                        <h4 class="text-xl font-bold mt-2">${p.title}</h4>
+                        <p class="text-sm text-gray-400 mt-4">@${p.author} • ${p.date}</p>
+                    </div>`;
+                });
+                feed.innerHTML = html || "<p class='col-span-full text-center'>Belum ada karya.</p>";
+            },
+
+            toggleDarkMode() {
+                this.state.darkMode = !this.state.darkMode;
+                document.documentElement.classList.toggle('dark');
+            }
+        };
+
+        window.app = app;
+        app.init();
+    </script>
+</body>
+</html>
